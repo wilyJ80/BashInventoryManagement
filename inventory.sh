@@ -16,7 +16,6 @@ list_all() {
 while [[ true ]]; do
 	clear
 
-	# to do: should I use `sed` for updating products?
 	cat <<- _EOF_
 	Menu:
 	a - Add product
