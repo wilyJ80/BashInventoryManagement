@@ -15,6 +15,7 @@ while [[ true ]]; do
 	a - Add product
 	l - List products
 	d - delete product
+	u - update product
 	ca - Clear all products
 	default - quit
 
@@ -29,6 +30,8 @@ while [[ true ]]; do
 
 		   # append
 	       echo $product >> products.txt
+		   echo ""
+		   read -p "--- Product added succesfully. Enter to continue > " resume
 	       ;;
 
 	    l) clear
@@ -51,6 +54,13 @@ while [[ true ]]; do
 			   read -p "--- Deletion succesful. Enter to continue > " resume
 		   fi
 		   ;;
+
+		u) clear
+		read -p "Enter product name to update > " to_update
+		read -p "Enter updated name > " updated_name
+		sed -i "s/$to_update/$updated_name/" products.txt
+		read -p "--- Replacing succesful. Enter to continue > " resume
+		;;
 
 	   ca) clear_all
 		   ;;
