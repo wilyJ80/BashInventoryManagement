@@ -6,6 +6,13 @@ clear_all () {
 	read -p "--- List cleared. Enter to continue > " resume
 }
 
+list_all() {
+	clear
+	cat products.txt
+	echo ""
+	echo "products in total: $(wc -l < products.txt)" 
+}
+
 while [[ true ]]; do
 	clear
 
@@ -26,6 +33,8 @@ while [[ true ]]; do
 	case "$command" in
 
 		a) clear
+			list_all
+			echo ""
 			read -p "Enter product > " product
 
 		   # append
@@ -34,14 +43,13 @@ while [[ true ]]; do
 		   read -p "--- Product added succesfully. Enter to continue > " resume
 		   ;;
 
-	   l) clear
-		   cat products.txt
-		   echo ""
-		   echo "products in total: $(wc -l < products.txt)" 
+	   l)   list_all
 		   read -p "--- Enter to continue > " resume
 		   ;;
 
 	   d) clear
+		   list_all
+		   echo ""
 		   read -p "Enter product to delete > " to_delete
 
 		   if grep -q "$to_delete" products.txt; then
@@ -54,10 +62,15 @@ while [[ true ]]; do
 				grep -v "$to_delete" products.txt > temp && mv temp products.txt
 				read -p "--- Deletion successful. Enter to continue > " resume
 			fi
+		else
+			echo "Product not found."
+			read -p "--- Enter to continue > " resume
 		   fi
 		   ;;
 
 	   u) clear
+		   list_all
+		   echo ""
 		   read -p "Enter product name to update > " to_update
 		   read -p "Enter updated name > " updated_name
 		   sed -i "s/$to_update/$updated_name/" products.txt
