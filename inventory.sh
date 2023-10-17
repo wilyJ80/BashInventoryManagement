@@ -1,13 +1,11 @@
 #!/bin/bash
 
 clear_all () {
-	clear
 	> products.txt
 	read -p "--- List cleared. Enter to continue > " resume
 }
 
 list_all() {
-	clear
 	cat products.txt
 	echo ""
 	echo "products in total: $(wc -l < products.txt)" 
@@ -22,6 +20,7 @@ while [[ true ]]; do
 	l - List products
 	d - delete product
 	u - update product
+	s - search product
 	ca - Clear all products
 	default - quit
 
@@ -29,12 +28,26 @@ while [[ true ]]; do
 
 	read -p "Enter command > " command 
 
+	clear
+
 	case "$command" in
 
-		a) clear
+		a)
 			list_all
 			echo ""
+
+			product=
+
+			while [[ -z "$product" ]] do
+
 			read -p "Enter product > " product
+
+			if [[ -z "$product" ]]; then
+				echo "Empty product, try again."
+				echo ""
+			fi
+
+			done
 
 		   # append
 		   echo $product >> products.txt
@@ -46,28 +59,36 @@ while [[ true ]]; do
 		   read -p "--- Enter to continue > " resume
 		   ;;
 
-	   d) clear
+	   d)
 		   list_all
+		   while true; do
+
 		   echo ""
 		   read -p "Enter product to delete > " to_delete
 
-		   if grep -q "$to_delete" products.txt; then
+		   if [[ -z $to_delete ]]; then
+			   echo "Empty product. Try again."
+		   	
+		   elif grep -q "$to_delete" products.txt; then
 
 			# if file has a single line, the file needs to be cleared
 			if [[ $(wc -l < products.txt) -eq 1 ]]; then
 				clear_all
+				break
 
 			else
 				grep -v "$to_delete" products.txt > temp && mv temp products.txt
 				read -p "--- Deletion successful. Enter to continue > " resume
+				break
 			fi
 		else
 			echo "Product not found."
-			read -p "--- Enter to continue > " resume
 		   fi
+
+		done
 		   ;;
 
-	   u) clear
+	   u)
 		   list_all
 		   echo ""
 		   read -p "Enter product name to update > " to_update
@@ -75,6 +96,28 @@ while [[ true ]]; do
 		   sed -i "s/$to_update/$updated_name/" products.txt
 		   read -p "--- Replacing succesful. Enter to continue > " resume
 		   ;;
+	
+	   s)
+		   list_all
+		   while true; do
+  
+		   echo ""
+		   read -p "Enter product name to search > " to_search
+
+		   if [[ -z $to_search ]]; then
+			   echo "Empty search. Enter product."
+		   elif grep -q "$to_search" products.txt; then
+			   echo "Product: $to_search"
+			   echo "<attributes>"
+			   echo ""
+			   read -p "--- Enter to continue > " resume
+			   break
+		   else
+			   echo "Product not found."
+		   fi
+
+	           done
+	           ;;
 
 	   ca) clear_all
 		   ;;
